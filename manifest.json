@@ -1,0 +1,8 @@
+{
+  "id":           "dropbox",
+  "type":         "mod",
+  "name":         "DropBox",
+  "icon_url":     "icon.png",
+  "description":  "Extension for file uploading to DropBox",
+  "version":      "1.0.0"
+}
