@@ -11,9 +11,6 @@
  */
 
 namespace Box\Mod\Dropbox;
-
-use RedBeanPHP\SimpleModel;
-
 require_once BB_PATH_MODS . '/Dropbox/dropbox-sdk/autoload.php';
 
 
@@ -54,36 +51,6 @@ class Service implements \Box\InjectionAwareInterface
         $this->di['db']->exec('DROP TABLE dropbox;');
     }
 
-    public function getDropboxAppInfo()
-    {
-        return \Dropbox\AppInfo::loadFromJsonFile(BB_PATH_MODS . "/Dropbox/config.json");
-    }
-
-    public function getAuthLink()
-    {
-        $appInfo      = $this->getDropboxAppInfo();
-        $webAuth      = new \Dropbox\WebAuthNoRedirect($appInfo, "PHP-Example/1.0");
-        $authorizeUrl = $webAuth->start();
-
-        return $authorizeUrl;
-    }
-
-    public function saveToken($authCode)
-    {
-        $appInfo = $this->getDropboxAppInfo();
-        $webAuth = new \Dropbox\WebAuthNoRedirect($appInfo, "PHP-Example/1.0");
-        list($accessToken, $dropboxUserId) = $webAuth->finish(trim($authCode));
-        $api    = $this->di['api_admin'];
-        $config = array(
-            'ext'             => 'mod_dropbox',
-            'auth_code'       => $authCode,
-            'access_token'    => $accessToken,
-            'dropbox_user_id' => $dropboxUserId
-        );
-
-        return $api->extension_config_save($config);
-    }
-
     public function getDropboxClient()
     {
         $api    = $this->di['api_admin'];
@@ -93,7 +60,7 @@ class Service implements \Box\InjectionAwareInterface
         }
         $accessToken = $config['access_token'];
 
-        return new \Dropbox\Client($accessToken, "PHP-Example/1.0");;
+        return new \Dropbox\Client($accessToken, "PHP-BoxBilling/1.0");;
 
     }
 

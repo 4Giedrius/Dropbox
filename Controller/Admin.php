@@ -40,8 +40,6 @@ class Admin implements \Box\InjectionAwareInterface
 
     public function get_index(\Box_App $app)
     {
-        $dropboxService = $this->di['mod_service']('dropbox');
-        $authLink = $dropboxService->getAuthLink();
-        return $app->render('mod_dropbox_settings', array('authLink' => $authLink) );
+        return $app->render('mod_dropbox_settings');
     }
 }
