@@ -11,6 +11,9 @@
  */
 
 namespace Box\Mod\Dropbox;
+
+use RedBeanPHP\SimpleModel;
+
 require_once BB_PATH_MODS . '/Dropbox/dropbox-sdk/autoload.php';
 
 
@@ -30,13 +33,14 @@ class Service implements \Box\InjectionAwareInterface
 
     public function install()
     {
-        $sql="
+        $sql = "
         CREATE TABLE IF NOT EXISTS `dropbox` (
         `id` bigint(20) NOT NULL AUTO_INCREMENT,
         `client_id` bigint(20) DEFAULT NULL,
         `rel_id` bigint(20) DEFAULT NULL,
-        `path` varchar(256) DEFAULT NULL,
-        `name` varchar(256) DEFAULT NULL,
+        `extension` varchar(255) DEFAULT NULL,
+        `path` varchar(255) DEFAULT NULL,
+        `name` varchar(255) DEFAULT NULL,
         `created_at` varchar(35) DEFAULT NULL,
         `updated_at` varchar(35) DEFAULT NULL,
         PRIMARY KEY (`id`)
@@ -93,7 +97,7 @@ class Service implements \Box\InjectionAwareInterface
 
     }
 
-    public function uploadFile($file, $client_id = null, $rel_id = null)
+    public function uploadFile($file, $client_id, $rel_id, $extension)
     {
         $f         = fopen($file['tmp_name'], "rb");
         $filename  = $file['name'];
@@ -104,12 +108,34 @@ class Service implements \Box\InjectionAwareInterface
             $dropbox             = $this->di['db']->dispense('dropbox');
             $dropbox->client_id  = $client_id;
             $dropbox->rel_id     = $rel_id;
+            $dropbox->extension  = $extension;
             $dropbox->path       = $result['path'];
             $dropbox->name       = $filename;
             $dropbox->updated_at = date('c');
             $dropbox->created_at = date('c');
             $this->di['db']->store($dropbox);
         }
+
+        return true;
+    }
+
+    public function downloadFile(\RedBeanPHP\OODBBean $dropboxFile)
+    {
+        $path = $dropboxFile->name;
+        $f            = fopen($path, "w+b");
+        $dbxClient    = $this->getDropboxClient();
+        $fileMetadata = $dbxClient->getFile($dropboxFile->path, $f);
+        fclose($f);
+
+        header("Content-Type: application/force-download");
+        header("Content-Type: application/octet-stream");
+        header("Content-Type: application/download");
+        header("Content-Description: File Transfer");
+        header("Content-Disposition: attachment; filename=$path" . ";");
+        header("Content-Transfer-Encoding: binary");
+        readfile($path);
+        flush();
+        unlink($path);
 
         return true;
     }

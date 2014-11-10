@@ -19,13 +19,42 @@ class Client extends \Api_Abstract
 {
     public function upload_file($data)
     {
-        if (!isset($_FILES['file_data'])){
+        if (!isset($_FILES['file_data'])) {
             throw new \Box_Exception('File was not uploaded. Please contact support.');
         }
 
+        if (!isset($data['rel_id']) && empty($data['rel_id'])) {
+            throw new \Box_Exception('File related order ID is missing');
+        }
+
+        if (!isset($data['extension']) && empty($data['extension'])) {
+            throw new \Box_Exception('Extension name is missing');
+        }
+
         $client_id = $this->getIdentity()->id;
-        $rel_id = isset($data['rel_id']) ? $data['rel_id'] : null;
-        
-        return $this->getService()->uploadFile($_FILES['file_data'], $client_id, $rel_id);
+
+        return $this->getService()->uploadFile($_FILES['file_data'], $client_id, $data['rel_id'], $data['extension']);
+    }
+
+    public function get_file($data)
+    {
+        if (!isset($data['rel_id']) || empty($data['rel_id'])) {
+            throw new \Box_Exception('Related  object ID is missing');
+        }
+        if (!isset($data['extension']) || empty($data['extension'])) {
+            throw new \Box_Exception('Extension name is missing');
+        }
+
+        $bindings    = array(
+            ':rel_id'    => $data['rel_id'],
+            ':extension' => $data['extension'],
+            ':client_id' => $this->getIdentity()->id,
+        );
+        $dropboxFile = $this->di['db']->findOne('dropbox', 'rel_id = :rel_id AND client_id = :client_id AND extension LIKE :extension', $bindings);
+        if (!$dropboxFile) {
+            throw new \Box_Exception('File does not exist');
+        }
+
+        return $this->getService()->downloadFile($dropboxFile);
     }
 }
