@@ -1,0 +1,40 @@
+<form method="post" action="{{ 'api/client/dropbox/upload_file'|link }}" class="mainForm" enctype="multipart/form-data"
+      target="uploadframe" id="bb-upload-form">
+    <fieldset>
+
+        <div class="rowElem">
+            <label>Upload new file:</label>
+
+            <div class="formRight noborder">
+                <input type="file" name="file_data" id="file_data">
+                <input type="hidden" name="rel_id" id="rel_id" value="{{ rel_id }}">
+                <input type="hidden" name="extension" id="rel_id" value="{{ extension }}">
+            </div>
+            <div class="fix"></div>
+        </div>
+
+        <input type="submit" value="Upload" class="greyishBtn submitForm" id="bb-upload-button"/>
+    </fieldset>
+</form>
+
+<script type="text/javascript">
+    $(function () {
+        $('body').append('<iframe id="uploadframe" name="uploadframe" style="display:none" />');
+        $('#bb-upload-form').submit(function () {
+            $(this).attr('action', bb.restUrl('client/dropbox/upload_file'));
+            iframe = $('#uploadframe').load(function () {
+                response = iframe.contents().find('body');
+                data = $.parseJSON(response.text());
+                if (data.error) {
+                    bb.error(data.error.message, data.error.code);
+                }
+                if (data.result) {
+                    bb.msg('File was uploaded');
+                }
+                setTimeout(function () {
+                    response.html('');
+                }, 1);
+            });
+        });
+    });
+</script>
