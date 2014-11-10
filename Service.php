@@ -58,4 +58,27 @@ class Service implements \Box\InjectionAwareInterface
         return $api->extension_config_save($config);
     }
 
+    public function getDropboxClient()
+    {
+        $api    = $this->di['api_admin'];
+        $config = $api->extension_config_get(array('ext' => 'mod_dropbox'));
+        if (!isset($config['access_token']) || empty($config['access_token'])) {
+            throw new \Box_Exception('Dropbox access token missing. Please configure it from admin area');
+        }
+        $accessToken = $config['access_token'];
+
+        return new \Dropbox\Client($accessToken, "PHP-Example/1.0");;
+
+    }
+
+    public function uploadFile($file)
+    {
+        $f = fopen($file['tmp_name'], "rb");
+        $dbxClient = $this->getDropboxClient();
+        $result = $dbxClient->uploadFile('/' . $file['name'], \Dropbox\WriteMode::add(), $f);
+        return true;
+    }
+    
+
+
 }

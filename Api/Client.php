@@ -17,5 +17,12 @@ namespace Box\Mod\Dropbox\Api;
 
 class Client extends \Api_Abstract
 {
+    public function upload_file($data)
+    {
+        if (!isset($_FILES['file_data'])){
+            throw new \Box_Exception('File was not uploaded. Please contact support.');
+        }
 
+        return $this->getService()->uploadFile($_FILES['file_data']);
+    }
 }
