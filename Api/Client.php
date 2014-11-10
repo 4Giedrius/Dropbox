@@ -23,6 +23,9 @@ class Client extends \Api_Abstract
             throw new \Box_Exception('File was not uploaded. Please contact support.');
         }
 
-        return $this->getService()->uploadFile($_FILES['file_data']);
+        $client_id = $this->getIdentity()->id;
+        $rel_id = isset($data['rel_id']) ? $data['rel_id'] : null;
+        
+        return $this->getService()->uploadFile($_FILES['file_data'], $client_id, $rel_id);
     }
 }

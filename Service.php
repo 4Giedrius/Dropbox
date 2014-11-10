@@ -33,6 +33,8 @@ class Service implements \Box\InjectionAwareInterface
         $sql="
         CREATE TABLE IF NOT EXISTS `dropbox` (
         `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `client_id` bigint(20) DEFAULT NULL,
+        `rel_id` bigint(20) DEFAULT NULL,
         `path` varchar(256) DEFAULT NULL,
         `name` varchar(256) DEFAULT NULL,
         `created_at` varchar(35) DEFAULT NULL,
@@ -91,26 +93,24 @@ class Service implements \Box\InjectionAwareInterface
 
     }
 
-    public function uploadFile($file)
+    public function uploadFile($file, $client_id = null, $rel_id = null)
     {
-        $f = fopen($file['tmp_name'], "rb");
-        $filename = $file['name'];
+        $f         = fopen($file['tmp_name'], "rb");
+        $filename  = $file['name'];
         $dbxClient = $this->getDropboxClient();
-        $result = $dbxClient->uploadFile('/' . $filename, \Dropbox\WriteMode::add(), $f);
+        $result    = $dbxClient->uploadFile('/' . $filename, \Dropbox\WriteMode::add(), $f);
 
-        if (isset($result['path']) && !empty($result['path'])){
-            $dropbox = $this->di['db']->dispense('dropbox');
-            $dropbox->path = $result['path'];
-            $dropbox->name = $filename;
+        if (isset($result['path']) && !empty($result['path'])) {
+            $dropbox             = $this->di['db']->dispense('dropbox');
+            $dropbox->client_id  = $client_id;
+            $dropbox->rel_id     = $rel_id;
+            $dropbox->path       = $result['path'];
+            $dropbox->name       = $filename;
             $dropbox->updated_at = date('c');
             $dropbox->created_at = date('c');
             $this->di['db']->store($dropbox);
-
         }
+
         return true;
     }
-
-
-
-
 }
