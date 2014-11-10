@@ -38,7 +38,27 @@ class Admin extends \Api_Abstract
         }
 
         return $this->getService()->downloadFile($dropboxFile);
+    }
 
+    public function has_upload($data)
+    {
+        if (!isset($data['rel_id']) || empty($data['rel_id'])) {
+            throw new \Box_Exception('Related  object ID is missing');
+        }
+        if (!isset($data['extension']) || empty($data['extension'])) {
+            throw new \Box_Exception('Extension name is missing');
+        }
+
+        $bindings    = array(
+            ':rel_id'    => $data['rel_id'],
+            ':extension' => $data['extension'],
+        );
+        $dropboxFile = $this->di['db']->findOne('dropbox', 'rel_id = :rel_id AND extension LIKE :extension', $bindings);
+        if (!$dropboxFile) {
+            return false;
+        }
+
+        return true;
     }
 
 }
