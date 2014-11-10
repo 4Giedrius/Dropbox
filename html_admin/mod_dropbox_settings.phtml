@@ -19,20 +19,23 @@
     </div>
 
     {% set params = admin.extension_config_get({"ext":"mod_dropbox"}) %}
-    <form method="post" action="{{ 'api/admin/dropbox/save_token'|link }}" class="mainForm api-form" data-api-msg="{% trans 'Configuration updated' %}">
-
+    <form method="post" action="{{ 'api/admin/extension/config_save'|link }}" class="mainForm api-form" data-api-msg="{% trans 'Configuration updated' %}">
         <div class="help">
             <h3>{% trans 'Dropbox extension settings' %}</h3>
-            <p>{% trans 'In order to let this module to access your Dropbox account please click on the link below and in confirmation dialog click on Allow. Dropbox will show you code which you need to enter in the form below' %}</p>
-            <a href="{{authLink}}" class="btnIconLeft mr10 mt5" target="_blank"><img src="images/icons/dark/adminUser.png" alt="" class="icon"><span>Authorize Dropbox</span></a>
-            <p>{% trans 'New folder will be created in Apps folder where all uploaded files will be saved. ' %}</p>
+            <p>{% trans 'You need to take following steps in order to integrate Dropbox into your BoxBilling' %}:
+            <p>1. {% trans 'Create new Dropbox API app' %}: <a href="https://www.dropbox.com/developers/apps/create" target="_blank">https://www.dropbox.com/developers/apps/create</a></p>
+            <p>2. {% trans 'Click on' %} <strong>Dropbox API app</strong></p>
+            <p>3. {% trans 'For question' %} <i>What type of data does your app need to store on Dropbox?</i> {% trans 'select' %} <strong>Files and datastores</strong>  </p>
+            <p>4. {% trans 'For question' %} <i>Can your app be limited to its own folder?</i> {% trans 'select' %} <strong>Yes </strong> </p>
+            <p>5. {% trans 'Provide an app name and click on' %} <strong>Create app</strong> {% trans 'button' %}</p>
+            <p>6. {% trans 'After app will be created please find' %} <strong>OAuth 2</strong> {% trans 'section and click on' %} <strong>Generate</strong> {% trans 'button' %}</p>
+            <p>7. {% trans 'Once you click that button, you will see an OAuth 2 access token that you can use to make calls to the Dropbox API. Please copy and paste it into field below and click' %} <strong>{% trans 'Update' %}</strong> {% trans 'button' %}</p>
         </div>
-
         <fieldset>
             <div class="rowElem noborder">
-                <label>{% trans 'Dropbox  code' %}</label>
+                <label>{% trans 'Dropbox access token' %}</label>
                 <div class="formRight">
-                    <input type="text" name="auth_code" value="{{params.auth_code}}" placeholder="{% trans 'Dropbox code' %}"/>
+                    <input type="text" name="access_token" value="{{params.access_token}}" placeholder="{% trans 'Dropbox access token' %}"/>
                 </div>
                 <div class="fix"></div>
             </div>
@@ -41,6 +44,5 @@
             <input type="hidden" name="ext" value="mod_dropbox" />
         </fieldset>
     </form>
-
 </div>
 {% endblock %}
