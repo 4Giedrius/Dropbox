@@ -17,6 +17,14 @@ namespace Box\Mod\Dropbox\Api;
 
 class Admin extends \Api_Abstract
 {
+    /**
+     * Sends file attached to any extension
+     *
+     * @param int $rel_id - related object ID
+     * @param string $extension - extension title
+     * @return bool
+     * @throws \Box_Exception
+     */
     public function get_file($data)
     {
         if (!isset($data['rel_id']) || empty($data['rel_id'])) {
@@ -40,6 +48,14 @@ class Admin extends \Api_Abstract
         return $this->getService()->downloadFile($dropboxFile);
     }
 
+    /**
+     * Checks if the particular extension object has attachment
+     *
+     * @param int $rel_id - related object ID
+     * @param string $extension - extension title
+     * @return bool
+     * @throws \Box_Exception
+     */
     public function has_upload($data)
     {
         if (!isset($data['rel_id']) || empty($data['rel_id'])) {

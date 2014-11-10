@@ -17,6 +17,17 @@ namespace Box\Mod\Dropbox\Api;
 
 class Client extends \Api_Abstract
 {
+    /**
+     * Upload file to Dropbox. Uses $_FILES array so make sure your form is
+     * enctype="multipart/form-data"
+     *
+     * @param int $rel_id - rel_id id
+     * @param string $extension - rel_id id
+     * @param file $file_data - <input type="file" name="file_data" /> field content
+     *
+     * @return bool
+     * @throws \Box_Exception
+     */
     public function upload_file($data)
     {
         if (!isset($_FILES['file_data'])) {
@@ -36,6 +47,14 @@ class Client extends \Api_Abstract
         return $this->getService()->uploadFile($_FILES['file_data'], $client_id, $data['rel_id'], $data['extension']);
     }
 
+    /**
+     * Downloads file attached to any extension
+     *
+     * @param int $rel_id - related object ID
+     * @param string $extension - extension title
+     * @return bool
+     * @throws \Box_Exception
+     */
     public function get_file($data)
     {
         if (!isset($data['rel_id']) || empty($data['rel_id'])) {
@@ -58,6 +77,14 @@ class Client extends \Api_Abstract
         return $this->getService()->downloadFile($dropboxFile);
     }
 
+    /**
+     * Checks if the particular extension object has attachment
+     *
+     * @param int $rel_id - related object ID
+     * @param string $extension - extension title
+     * @return bool
+     * @throws \Box_Exception
+     */
     public function has_upload($data)
     {
         if (!isset($data['rel_id']) || empty($data['rel_id'])) {
