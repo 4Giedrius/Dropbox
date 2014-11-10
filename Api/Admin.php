@@ -17,5 +17,12 @@ namespace Box\Mod\Dropbox\Api;
 
 class Admin extends \Api_Abstract
 {
+    public function save_token($data)
+    {
+        if (!isset($data['auth_code']) || empty($data['auth_code'])){
+            throw new \Box_Exception('Dropbox authentication code missing');
+        }
+        return $this->getService()->saveToken($data['auth_code']);
+    }
 
 }

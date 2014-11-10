@@ -1,0 +1,46 @@
+{% extends request.ajax ? "layout_blank.phtml" : "layout_default.phtml" %}
+{% import "macro_functions.phtml" as mf %}
+{% block meta_title %}Dropbox extension settings{% endblock %}
+{% set active_menu = 'system' %}
+
+{% block breadcrumbs %}
+<ul>
+    <li class="firstB"><a href="{{ '/'|alink }}">{% trans 'Home' %}</a></li>
+    <li><a href="{{ 'system'|alink }}">{% trans 'Settings' %}</a></li>
+    <li class="lastB">{% trans 'Dropbox module settings' %}</li>
+</ul>
+{% endblock %}
+
+{% block content %}
+
+<div class="widget">
+    <div class="head">
+        <h5 class="iCog">{% trans 'Dropbox extension settings' %}</h5>
+    </div>
+
+    {% set params = admin.extension_config_get({"ext":"mod_dropbox"}) %}
+    <form method="post" action="{{ 'api/admin/dropbox/save_token'|link }}" class="mainForm api-form" data-api-msg="{% trans 'Configuration updated' %}">
+
+        <div class="help">
+            <h3>{% trans 'Dropbox extension settings' %}</h3>
+            <p>{% trans 'In order to let this module to access your Dropbox account please click on the link below and in confirmation dialog click on Allow. Dropbox will show you code which you need to enter in the form below' %}</p>
+            <a href="{{authLink}}" class="btnIconLeft mr10 mt5" target="_blank"><img src="images/icons/dark/adminUser.png" alt="" class="icon"><span>Authorize Dropbox</span></a>
+            <p>{% trans 'New folder will be created in Apps folder where all uploaded files will be saved. ' %}</p>
+        </div>
+
+        <fieldset>
+            <div class="rowElem noborder">
+                <label>{% trans 'Dropbox  code' %}</label>
+                <div class="formRight">
+                    <input type="text" name="auth_code" value="{{params.auth_code}}" placeholder="{% trans 'Dropbox code' %}"/>
+                </div>
+                <div class="fix"></div>
+            </div>
+
+            <input type="submit" value="{% trans 'Update' %}" class="greyishBtn submitForm" />
+            <input type="hidden" name="ext" value="mod_dropbox" />
+        </fieldset>
+    </form>
+
+</div>
+{% endblock %}
