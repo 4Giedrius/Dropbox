@@ -94,11 +94,23 @@ class Service implements \Box\InjectionAwareInterface
     public function uploadFile($file)
     {
         $f = fopen($file['tmp_name'], "rb");
+        $filename = $file['name'];
         $dbxClient = $this->getDropboxClient();
-        $result = $dbxClient->uploadFile('/' . $file['name'], \Dropbox\WriteMode::add(), $f);
+        $result = $dbxClient->uploadFile('/' . $filename, \Dropbox\WriteMode::add(), $f);
+
+        if (isset($result['path']) && !empty($result['path'])){
+            $dropbox = $this->di['db']->dispense('dropbox');
+            $dropbox->path = $result['path'];
+            $dropbox->name = $filename;
+            $dropbox->updated_at = date('c');
+            $dropbox->created_at = date('c');
+            $this->di['db']->store($dropbox);
+
+        }
         return true;
     }
-    
+
+
 
 
 }
