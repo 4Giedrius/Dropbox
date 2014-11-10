@@ -28,6 +28,26 @@ class Service implements \Box\InjectionAwareInterface
         return $this->di;
     }
 
+    public function install()
+    {
+        $sql="
+        CREATE TABLE IF NOT EXISTS `dropbox` (
+        `id` bigint(20) NOT NULL AUTO_INCREMENT,
+        `path` varchar(256) DEFAULT NULL,
+        `name` varchar(256) DEFAULT NULL,
+        `created_at` varchar(35) DEFAULT NULL,
+        `updated_at` varchar(35) DEFAULT NULL,
+        PRIMARY KEY (`id`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+        ";
+        $this->di['db']->exec($sql);
+    }
+
+    public function uninstall()
+    {
+        $this->di['db']->exec('DROP TABLE dropbox;');
+    }
+
     public function getDropboxAppInfo()
     {
         return \Dropbox\AppInfo::loadFromJsonFile(BB_PATH_MODS . "/Dropbox/config.json");
