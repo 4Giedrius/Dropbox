@@ -43,6 +43,39 @@
             <input type="submit" value="{% trans 'Update' %}" class="greyishBtn submitForm" />
             <input type="hidden" name="ext" value="mod_dropbox" />
         </fieldset>
+        <hr/>
+        <div class="help">
+            <h3>{% trans 'Using extension' %}</h3>
+            <p>This example will show you how to add <strong>ticket attachment</strong> functionality but feel free to use it in another context;</p>
+            <p>1. Please copy template you want to edit <strong>[bb-modules/Support/html_client/mod_support_ticket.phtml]</strong> to your theme html folder <strong>[bb-themes/huraga/html]</strong> (otherwise during next update it will be overwritten). </p>
+            <p>2. Add following lines of code to template you copied where you want upload form and download button to appear.</p>
+
+
+            <div class="widget">
+                <div class="head"><h5 class="iComputer">CLIENT template code for  (if file is not uploaded, upload form will be shown, otherwise download button will be visible)</h5></div>
+                <pre class="showCodeJS">
+                    {% raw %}
+    {% if client.dropbox_has_upload({'rel_id':ticket.id, 'extension' : 'ticket'}) %}
+        {% include 'mod_dropbox_download.phtml' with {'rel_id':ticket.id, 'extension' : 'ticket'} %}
+    {% else %}
+        {% include 'mod_dropbox_upload.phtml' with {'rel_id':ticket.id, 'extension' : 'ticket'} %}
+    {% endif %}
+                    {% endraw %}
+                </pre>
+            </div>
+            <p>3. Make sure object (in this case ticket object) is present in template  and <strong>pass object ID as 'rel_id'</strong>.</p>
+            <p>4. Repeat these steps for admin template in order to see download button in admin area.</p>
+            <div class="widget">
+                <div class="head"><h5 class="iComputer">ADMIN attachment download button code</h5></div>
+                <pre class="showCodeJS">
+                    {% raw %}
+    {% if admin.dropbox_has_upload({'rel_id':ticket.id, 'extension' : 'ticket'}) %}
+        {% include 'mod_dropbox_download.phtml' with {'rel_id':ticket.id, 'extension' : 'ticket'} %}
+    {% endif %}
+                    {% endraw %}
+                </pre>
+            </div>
+        </div>
     </form>
 </div>
 {% endblock %}
