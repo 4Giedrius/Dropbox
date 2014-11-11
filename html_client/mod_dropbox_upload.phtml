@@ -1,19 +1,15 @@
 <form method="post" action="{{ 'api/client/dropbox/upload_file'|link }}" class="mainForm" enctype="multipart/form-data"
       target="uploadframe" id="bb-upload-form">
     <fieldset>
-
-        <div class="rowElem">
-            <label>Upload new file:</label>
-
-            <div class="formRight noborder">
+        <div class="control-group">
+            <label class="control-label" for="fileInput">{% trans 'File input' %}</label>
+            <div class="controls">
                 <input type="file" name="file_data" id="file_data">
                 <input type="hidden" name="rel_id" id="rel_id" value="{{ rel_id }}">
                 <input type="hidden" name="extension" id="rel_id" value="{{ extension }}">
+                <button type="submit" value="" class="btn" id="bb-upload-button"/>{% trans 'Upload attachment' %}</bu
             </div>
-            <div class="fix"></div>
         </div>
-
-        <input type="submit" value="Upload" class="greyishBtn submitForm" id="bb-upload-button"/>
     </fieldset>
 </form>
 
