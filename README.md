@@ -1,4 +1,4 @@
-mod_dropbox
+Dropbox
 ===========
 
 BoxBilling extension for file uploading to DropBox
